@@ -1,0 +1,18 @@
+### DELETING OLD OPENSHIFT FILE
+- name: Deleting old hosts file
+  file:
+     path: "./tmp/openshift.config"
+     state: absent
+  ignore_errors: True
+  tags: 
+     - openshift_inventory
+### CREATING OPENSHIFT CONFIG FILE
+- name: Copying Openshift file template
+  template:
+       src: "./templates/openshift_hosts.j2"
+       dest: "/etc/ansible/hosts"
+       owner: root
+       group: root
+       mode: "u=rw,g=r,o=r"
+  tags:
+     - openshift_inventory

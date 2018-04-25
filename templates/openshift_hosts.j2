@@ -1,0 +1,79 @@
+[OSEv3:children]
+masters
+nodes
+etcd
+nfs
+
+[OSEv3:vars]
+deployment_type=openshift-enterprise
+ansible_ssh_user=root
+openshift_hosted_router_selector='host=infra'
+openshift_router_selector='host=infra'
+openshift_hosted_registry_selector='host=infra'
+openshift_registry_selector='host=infra'
+openshift_metrics_install_metrics=true
+openshift_metrics_storage_kind=nfs
+openshift_metrics_storage_access_modes=['ReadWriteOnce']
+openshift_metrics_storage_nfs_directory=/exports
+openshift_metrics_storage_nfs_options='*(rw,root_squash)'
+openshift_metrics_storage_volume_name=metrics
+openshift_metrics_storage_volume_size=2Gi
+containerized=false
+openshift_logging_install_logging=true
+openshift_logging_storage_kind=nfs
+openshift_logging_storage_access_modes=['ReadWriteOnce']
+openshift_logging_storage_nfs_directory=/exports
+openshift_logging_storage_nfs_options='*(rw,root_squash)'
+openshift_logging_storage_volume_name=logging
+openshift_logging_storage_volume_size=2Gi
+openshift_hosted_registry_storage_kind=nfs
+openshift_hosted_registry_storage_access_modes=['ReadWriteMany']
+openshift_hosted_registry_storage_nfs_directory=/exports
+openshift_hosted_registry_storage_nfs_options='*(rw,root_squash)'
+openshift_hosted_registry_storage_volume_name=registry
+openshift_hosted_registry_storage_volume_size=2Gi
+openshift_master_api_port=443
+openshift_master_console_port=443
+openshift_master_cluster_method=native
+openshift_hosted_etcd_storage_kind=nfs
+openshift_hosted_etcd_storage_nfs_options="*(rw,root_squash,sync,no_wdelay)"
+openshift_hosted_etcd_storage_nfs_directory=/exports 
+openshift_hosted_etcd_storage_volume_name=etcd-vol2 
+openshift_hosted_etcd_storage_access_modes=["ReadWriteOnce"]
+openshift_hosted_etcd_storage_volume_size=1G
+openshift_hosted_etcd_storage_labels={'storage': 'etcd'}
+
+{% for host in groups['openshift_router_lb_group'] %}
+openshift_master_metrics_public_url=https://hawkular-metrics.apps.{{ openshift_subdomain }}/hawkular/metrics
+openshift_master_default_subdomain=apps.{{ openshift_subdomain }}
+{% endfor %}
+
+{% for host in groups['openshift_master_group'] %}
+openshift_master_public_hostname=console.{{ openshift_subdomain }}
+{% endfor %}
+
+[masters]
+{% for host in groups['openshift_master_group'] %}
+{{ hostvars[host].instance_name }} node=True storage=True master=True
+{% endfor %}
+
+[nodes]
+{% for host in groups['openshift_master_group'] %}
+{{ hostvars[host].instance_name }} node=True storage=True master=True openshift_schedulable=True
+{% endfor %}
+{% for host in groups['openshift_infra_group'] %}
+{{ hostvars[host].instance_name }} openshift_node_labels="{'host': 'infra', 'region': 'infra'}" node=True openshift_schedulable=True
+{% endfor %}
+{% for host in groups['openshift_node_group'] %}
+{{ hostvars[host].instance_name }} openshift_node_labels="{'host': 'apps'}" node=True openshift_schedulable=True  
+{% endfor %}
+
+[etcd]
+{% for host in groups['openshift_master_group'] %}
+{{ hostvars[host].instance_name }} node=True storage=True master=True
+{% endfor %}
+
+[nfs]
+{% for host in groups['openshift_headnode_group'] %}
+{{ hostvars[host].instance_name }}
+{% endfor %}
