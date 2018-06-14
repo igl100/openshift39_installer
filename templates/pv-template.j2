@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: pv-{{ item }}
+spec:
+  capacity:
+    storage: 1Gi
+  accessModes:
+  - ReadWriteOnce
+  nfs:
+    path: /exports/pv-{{ item }}
+{% for host in groups['openshift_master_group'] %}
+    server: {{ hostvars[host].instance_name }}
+{% endfor %}
+  persistentVolumeReclaimPolicy: Recycle
