@@ -44,7 +44,7 @@
         zone: "{{ zone }}"
         network: "{{ network_name }}"
         subnetwork: "{{ subnetwork_name }}"
-        tags: "enable-ssh"
+        tags: "openshift-enable-ssh"
         disk_auto_delete: True
         project_id: "{{ gce_project_id }}"
         credentials_file: "{{ gce_credentials_file }}"
@@ -112,6 +112,7 @@
          - rhel-7-fast-datapath-rpms
          - rhel-7-server-rhmap-4.3-rpms
          - rhel-7-server-3scale-amp-2.1-rpms
+         - rhel-7-server-ansible-2.4-rpms
      disk_storage: "/dev/sdb"
      disk_storage_partition: "{{ disk_storage }}1"
      disk_storage_directory: "/var/storage/repos"

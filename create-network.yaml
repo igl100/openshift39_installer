@@ -8,7 +8,7 @@
      - settings/defaults
   vars:
      openshift_firewall_rules:
-         - { name: "enable-ssh", allow: "tcp:22",          range: "0.0.0.0/0", tag: "enable-ssh" }
+         - { name: "enable-ssh", allow: "tcp:22",          range: "0.0.0.0/0", tag: "openshift-enable-ssh" }
          - { name: "master",     allow: "tcp:8443,9090,80,443",   range: "0.0.0.0/0", tag: "openshift-master" }
          - { name: "infranode",  allow: "tcp:80,443,1936,8443,9090", range: "0.0.0.0/0", tag: "openshift-infra-node" }
          - { name: "node",  allow: "tcp:80,443,1936,8443,9090", range: "0.0.0.0/0", tag: "openshift-node" }

@@ -23,7 +23,7 @@
     zone: "{{ zone }}"
     network: "{{ network_name }}"
     subnetwork: "{{ subnetwork_name }}"
-    tags: ["enable-ssh","openshift-master"]
+    tags: ["openshift-enable-ssh","openshift-master"]
     disk_auto_delete: True
     project_id: "{{ gce_project_id }}"
     credentials_file: "{{ gce_credentials_file }}"

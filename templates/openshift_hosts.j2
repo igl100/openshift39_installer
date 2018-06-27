@@ -6,6 +6,7 @@ nfs
 
 [OSEv3:vars]
 deployment_type=openshift-enterprise
+oreg_url=registry.access.redhat.com/openshift3/ose-${component}:${version}
 ansible_ssh_user=root
 openshift_hosted_router_selector='host=infra'
 openshift_router_selector='host=infra'
