@@ -1,14 +1,14 @@
 apiVersion: v1
 kind: PersistentVolume
 metadata:
-  name: pv-{{ item }}
+  name: {{ pv_prefix }}{{ item }}
 spec:
   capacity:
-    storage: 1Gi
+    storage: {{ pv_size }}
   accessModes:
-  - ReadWriteOnce
+  - ReadWriteMany
   nfs:
-    path: /exports/pv-{{ item }}
+    path: /{{ pv_exports_dir }}/{{ pv_prefix }}{{ item }}
 {% for host in groups['openshift_master_group'] %}
     server: {{ hostvars[host].instance_name }}
 {% endfor %}

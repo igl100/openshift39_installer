@@ -564,6 +564,11 @@
         tags:
            - containers_setup
 
+      - name: Adding anyuid to all users for running root containers
+        command: "oc adm policy add-scc-to-group anyuid system:authenticated"
+        tags:
+           - containers_setup
+
       - name: Adding DV user to Stage
         command: "oadm policy add-role-to-user admin dv -n stage"
         tags:

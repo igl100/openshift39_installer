@@ -2,12 +2,15 @@
 - name: Create hosts for OpenShift Openshift@Ops{{ ':' }} Masters, Infras, Glusters and a Nodes
   hosts: openshift_master_group
   vars:
-    - pv_items: 50 
+    - pv_items: 10 
+    - pv_prefix: pv10-
+    - pv_size: 10Gi
+    - pv_exports_dir: exports
   gather_facts: False
   tasks:
     - name: Creating PV directories on NFS server
       file:
-        path: /exports/pv-{{ item }}
+        path: /{{ pv_exports_dir }}/{{ pv_prefix }}{{ item }}
         owner: nfsnobody
         group: nfsnobody
         mode: 777
@@ -20,7 +23,7 @@
       lineinfile:
         path: /etc/exports.d/openshift-ansible.exports
         insertafter: EOF
-        line: '/exports/pv-{{ item }}" *(rw,root_squash)"'
+        line: '"/{{ pv_exports_dir }}/{{ pv_prefix }}{{ item }}" *(rw,root_squash)'
       with_sequence: count={{ pv_items }}
       tags:
         - exports
@@ -35,13 +38,13 @@
     - name: Creating pv yaml files
       template: 
         src: ./templates/pv-template.j2
-        dest: /tmp/pv-{{ item }}
+        dest: /tmp/{{ pv_prefix }}{{ item }}
       with_sequence: count={{ pv_items }}
       tags:
         - create-templates
 
     - name: Creating PV with OC client
-      command: 'oc create -f /tmp/pv-{{ item }}'
+      command: 'oc create -f /tmp/{{ pv_prefix }}{{ item }}'
       with_sequence: count={{ pv_items }}
       tags:
        - create-pvs
